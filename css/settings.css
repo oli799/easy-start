@@ -1,0 +1,48 @@
+:root {
+  --dark: #1c1d21;
+  --grey: #393a41;
+  --light: #fffffc;
+  --primary: #f7cb15;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+h2 {
+  margin-left: 1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  width: 100%;
+}
+
+.container .header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.container .header a:hover {
+  opacity: 0.5;
+}
+
+.container .header a:first-child {
+  margin-right: 1rem;
+}
+
+.container .header a i {
+  color: var(--primary);
+}
+
+.container .main {
+  height: 100%;
+}

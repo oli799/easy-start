@@ -1,0 +1,16 @@
+{
+  "name": "easy-start",
+  "version": "1.0.0",
+  "description": "create your next project much easier",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "oli799",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^11.1.1",
+    "electron-reload": "^1.5.0"
+  }
+}
