@@ -1,0 +1,43 @@
+@import './colors.scss';
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  background-color: lighten($dark, 5);
+  color: $light;
+}
+
+h2 {
+  margin-left: 1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  width: 100%;
+
+  .header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    a i {
+      color: $primary;
+    }
+
+    a:hover {
+      opacity: 0.5;
+    }
+
+    a:first-child {
+      margin-right: 1rem;
+    }
+  }
+
+  .main {
+    height: 100%;
+  }
+}

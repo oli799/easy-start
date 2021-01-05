@@ -1,0 +1,102 @@
+@import './colors.scss';
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  background-color: lighten($dark, 5);
+}
+
+.main {
+  width: 100%;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  color: $light;
+  text-align: center;
+
+  .row-1 {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+
+    input,
+    select {
+      flex: 1;
+      border: 0;
+      border-radius: 5px;
+      padding: 1rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+      color: $light;
+      background-color: lighten($dark, 10);
+      max-width: 300px;
+    }
+
+    select:required:invalid {
+      color: gray;
+    }
+    option[value=''][disabled] {
+      display: none;
+    }
+
+    option:required:invalid {
+      color: gray;
+    }
+  }
+}
+
+.sidebar {
+  min-width: 220px;
+  height: 100vh;
+  background-color: $dark;
+  color: $light;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  .top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .buttons a:hover {
+      opacity: 0.5;
+    }
+    .buttons a:first-child {
+      margin-right: 1rem;
+    }
+
+    .buttons i {
+      color: $primary;
+    }
+  }
+
+  .bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: auto;
+    padding-bottom: 1.5rem;
+
+    .recent-project {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.5;
+      }
+
+      .alt {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        opacity: 0.5;
+      }
+    }
+  }
+}
