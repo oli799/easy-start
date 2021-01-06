@@ -10,31 +10,101 @@ body {
 
 .main {
   width: 100%;
-  padding: 0 1.5rem 1.5rem 1.5rem;
+  padding: 0 1.5rem 0 1.5rem;
   color: $light;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // justify-content: center;
+
+  .row-1,
+  .row-2,
+  .row-3,
+  .row-4 {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+  }
 
   .row-1 {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-
+    justify-content: space-between;
     input,
     select {
       flex: 1;
-      border: 0;
-      border-radius: 5px;
-      padding: 1rem;
-      margin: 0.5rem;
-      font-size: 1rem;
-      color: $light;
-      background-color: lighten($dark, 10);
-      max-width: 300px;
     }
+  }
 
-    select:required:invalid {
+  .row-2 {
+    justify-content: space-between;
+    input {
+      width: 100%;
+    }
+  }
+
+  .row-3 {
+    margin-top: 0.5rem;
+    margin-bottom: 3rem;
+    .styled-checkbox {
+      position: absolute;
+      opacity: 0;
+
+      & + label {
+        position: relative;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 0.5rem;
+      }
+
+      & + label:before {
+        content: '';
+        margin-right: 10px;
+        display: inline-block;
+        vertical-align: text-top;
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+        background-color: lighten($dark, 10);
+      }
+
+      &:checked + label:before {
+        background: $primary;
+      }
+
+      &:checked + label:after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 9px;
+        background: white;
+        width: 2px;
+        height: 2px;
+        box-shadow: 2px 0 0 white, 4px 0 0 white, 4px -2px 0 white,
+          4px -4px 0 white, 4px -6px 0 white, 4px -8px 0 white;
+        transform: rotate(45deg);
+      }
+    }
+  }
+
+  input,
+  select {
+    border: 0;
+    border-radius: 5px;
+    padding: 1rem;
+    margin: 0.5rem;
+    font-size: 1rem;
+    color: $light;
+    background-color: lighten($dark, 10);
+
+    &:required:invalid {
       color: gray;
     }
+
+    &:focus {
+      border: 2px solid $primary;
+      outline: none;
+    }
+
     option[value=''][disabled] {
       display: none;
     }
@@ -45,12 +115,31 @@ body {
   }
 }
 
+button {
+  color: $light;
+  font-weight: bold;
+  border: 0;
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: 5px;
+  background-color: $primary;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    opacity: 0.5;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
 .sidebar {
   min-width: 220px;
   height: 100vh;
   background-color: $dark;
   color: $light;
-  padding: 0 1.5rem 1.5rem 1.5rem;
+  padding: 0 1.5rem 0 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
