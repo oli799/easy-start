@@ -100,41 +100,50 @@
     </div>
     <div class="main">
       <h1>Start something new!</h1>
-      <div class="row-1">
-        <input type="text" placeholder="Project name" required />
-        <select name="type" required>
-          <option value="" disabled selected>Project type</option>
-          <option>Npm (JavaScript)</option>
-          <option>Python</option>
-          <option>Empty</option>
-        </select>
-      </div>
-      <div class="row-2">
-        <input
-          type="text"
-          placeholder="Your working directory"
-          id="workingDirInput"
-          required
-          disabled
-        />
-        <button id="workingDirButton">Browse</button>
-      </div>
-      <div class="row-3">
-        <input
-          class="styled-checkbox"
-          id="styled-checkbox-1"
-          type="checkbox"
-          value="value1"
-          checked
-        />
-        <label for="styled-checkbox-1"
-          >Inintalize your project with github repository</label
-        >
-      </div>
-      <div class="row-4">
-        <button id="createProjectButton">Create Project</button>
-        <button id="openProjectButton" disabled>Open in VsCode</button>
-      </div>
+      <form id="createProjectFrom">
+        <div class="row-1">
+          <input
+            name="project_name"
+            type="text"
+            placeholder="Project name"
+            required
+          />
+          <select name="preset_type" required>
+            <option value="" disabled selected>Project type</option>
+            <option value="npm">Npm (JavaScript)</option>
+            <option value="express">Express (JavaScript)</option>
+            <option value="django">Django (Python)</option>
+            <option value="empty">Empty</option>
+          </select>
+        </div>
+        <div class="row-2">
+          <input
+            name="working_dir"
+            type="text"
+            placeholder="Your working directory"
+            id="workingDirInput"
+            required
+          />
+          <button id="workingDirButton">Browse</button>
+        </div>
+        <div class="row-3">
+          <input
+            class="styled-checkbox"
+            name="with_git"
+            id="withGit"
+            type="checkbox"
+            value="true"
+            checked
+          />
+          <label for="withGit"
+            >Inintalize your project with github repository</label
+          >
+        </div>
+        <div class="row-4">
+          <button type="submit" id="createProjectButton">Create Project</button>
+          <button id="openProjectButton" disabled>Open in VsCode</button>
+        </div>
+      </form>
     </div>
     <script src="../js/index.js"></script>
   </body>
