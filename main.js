@@ -1,9 +1,13 @@
 const { execSync } = require('child_process');
 const { app, BrowserWindow, ipcMain } = require('electron');
+const Store = require('electron-store');
+const { v4 } = require('uuid');
 const fs = require('fs');
 
 // reloading app after every change
 require('electron-reload')(__dirname);
+
+const store = new Store();
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -33,7 +37,7 @@ app.on('activate', function () {
 });
 
 // listen calls from index.js
-ipcMain.on('request-create-new-project', async function (event, arg) {
+ipcMain.on('request-create-new-project', function (event, arg) {
   const projectFolderPath = `${arg.working_dir}/${arg.project_name}`;
 
   // create project folder
@@ -48,7 +52,7 @@ ipcMain.on('request-create-new-project', async function (event, arg) {
   }
 
   // get and save selected preset
-  const isPresetCreated = await createSelectedPreset(
+  const isPresetCreated = createSelectedPreset(
     arg.preset_type,
     projectFolderPath
   );
@@ -63,6 +67,19 @@ ipcMain.on('request-create-new-project', async function (event, arg) {
     );
   }
 
+  // save project details
+  const id = v4();
+  store.set(
+    `projects.${id}`,
+    JSON.stringify({
+      id: id,
+      name:
+        arg.project_name.charAt(0).toUpperCase() + arg.project_name.slice(1),
+      preset: arg.preset_type,
+      date: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+    })
+  );
+
   if (!!arg.with_git) {
     // create git repo
   }
@@ -70,16 +87,27 @@ ipcMain.on('request-create-new-project', async function (event, arg) {
   return event.reply('response-create-new-project', 'Done!');
 });
 
-async function createSelectedPreset(type, path) {
+ipcMain.handle('request-recent-projects', function (event, key) {
+  return store.get(key);
+});
+
+ipcMain.handle('request-recent-project-delete', function (event, id) {
+  return store.delete(`projects.${id}`);
+});
+
+function createSelectedPreset(type, path) {
   switch (type) {
     case 'npm': {
       return execSync('npm init -y', { cwd: path });
     }
     case 'django': {
       try {
-        return execSync('git cone https://github.com/wsvincent/djangox.git .', {
-          cwd: path,
-        });
+        return execSync(
+          'git clone https://github.com/wsvincent/djangox.git .',
+          {
+            cwd: path,
+          }
+        );
       } catch (error) {
         return 0;
       }
@@ -87,7 +115,7 @@ async function createSelectedPreset(type, path) {
     case 'express': {
       try {
         return execSync(
-          'git cone https://github.com/latifs/simple-express.git .',
+          'git clone https://github.com/latifs/simple-express.git .',
           {
             cwd: path,
           }
@@ -97,7 +125,7 @@ async function createSelectedPreset(type, path) {
       }
     }
     case 'empty': {
-      break;
+      return 'done';
     }
   }
 }

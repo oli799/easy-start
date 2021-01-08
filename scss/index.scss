@@ -162,13 +162,26 @@ button {
     }
   }
 
-  .bottom {
+  #bottom {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    overflow: auto;
     padding-bottom: 1.5rem;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-recent {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0.5;
+    }
 
     .recent-project {
       width: 100%;
@@ -180,6 +193,20 @@ button {
         opacity: 0.5;
       }
 
+      .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        i {
+          color: lighten($dark, 10);
+
+          &:hover {
+            color: $red;
+          }
+        }
+      }
+
       .alt {
         width: 100%;
         display: flex;
@@ -188,4 +215,17 @@ button {
       }
     }
   }
+}
+
+#loader {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: $light;
+  font-weight: bold;
 }
