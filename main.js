@@ -1,8 +1,9 @@
 const { execSync } = require('child_process');
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const Store = require('electron-store');
 const { v4 } = require('uuid');
 const fs = require('fs');
+const path = require('path');
 
 // reloading app after every change
 require('electron-reload')(__dirname);
@@ -19,7 +20,7 @@ function createWindow() {
     },
   });
 
-  win.loadFile('./pages/index.html');
+  win.loadFile(path.join(__dirname, '/pages/index.html'));
 }
 
 app.whenReady().then(createWindow);
@@ -36,7 +37,7 @@ app.on('activate', function () {
   }
 });
 
-// listen calls from index.js
+// create new project
 ipcMain.on('request-create-new-project', function (event, arg) {
   const projectFolderPath = `${arg.working_dir}/${arg.project_name}`;
 
@@ -73,9 +74,9 @@ ipcMain.on('request-create-new-project', function (event, arg) {
     `projects.${id}`,
     JSON.stringify({
       id: id,
-      name:
-        arg.project_name.charAt(0).toUpperCase() + arg.project_name.slice(1),
-      preset: arg.preset_type,
+      name: arg.project_name,
+      preset:
+        arg.preset_type.charAt(0).toUpperCase() + arg.preset_type.slice(1),
       date: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
     })
   );
@@ -87,15 +88,28 @@ ipcMain.on('request-create-new-project', function (event, arg) {
   return event.reply('response-create-new-project', 'Done!');
 });
 
+// get recent projects
 ipcMain.handle('request-recent-projects', function (event, key) {
   return store.get(key);
 });
 
+// delete recent project by id
 ipcMain.handle('request-recent-project-delete', function (event, id) {
   return store.delete(`projects.${id}`);
 });
 
+// save/update working directory
+ipcMain.handle('request-save-working-directory', function (event, dir) {
+  return store.set('workingDir', dir);
+});
+
+// get working directory
+ipcMain.handle('request-working-directory', function (event, arg) {
+  return store.get('workingDir');
+});
+
 function createSelectedPreset(type, path) {
+  // execute terminal command
   switch (type) {
     case 'npm': {
       return execSync('npm init -y', { cwd: path });
@@ -130,6 +144,7 @@ function createSelectedPreset(type, path) {
   }
 }
 
+// create project folder
 function createProjectFolder(path) {
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path);

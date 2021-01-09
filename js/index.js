@@ -3,7 +3,7 @@ const { dialog } = require('electron').remote;
 
 const cerateProjectForm = document.querySelector('#createProjectFrom');
 const workingDirButton = document.querySelector('#workingDirButton');
-const workongDirInput = document.querySelector('#workingDirInput');
+const workingDirInput = document.querySelector('#workingDirInput');
 const loaderDiv = document.querySelector('#loader');
 const everythingExceptLoader = document.querySelectorAll(
   'body > *:not(#loader)'
@@ -13,6 +13,13 @@ const openProjectButton = document.querySelector('#openProjectButton');
 
 cerateProjectForm.addEventListener('submit', createProject);
 workingDirButton.addEventListener('click', getWorkingDir);
+
+function loader(show) {
+  loaderDiv.style.display = show ? 'flex' : 'none';
+  everythingExceptLoader.forEach(function (element) {
+    element.style.filter = show ? 'blur(5px)' : null;
+  });
+}
 
 function createProject(e) {
   e.preventDefault();
@@ -27,6 +34,9 @@ function createProject(e) {
   // call main thread function
   ipcRenderer.send('request-create-new-project', requestObject);
 
+  // TODO: get input value from form
+  setWorkingDirectory(workingDirInput.value);
+
   // show loader
   loader(true);
 
@@ -38,10 +48,11 @@ function createProject(e) {
   });
 }
 
+// show file explorer to set the working directory
 async function getWorkingDir() {
   const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
   const workingDir = result.filePaths[0];
-  workongDirInput.value = workingDir;
+  workingDirInput.value = workingDir;
   workingDirInput.disabled = false;
 }
 
@@ -90,11 +101,23 @@ async function setRecentProjects() {
   }
 }
 
-function loader(show) {
-  loaderDiv.style.display = show ? 'flex' : 'none';
-  everythingExceptLoader.forEach(function (element) {
-    element.style.filter = show ? 'blur(5px)' : null;
-  });
+async function setWorkingDirectory(dir) {
+  // save the working dir to the storage
+  if (dir) {
+    await ipcRenderer.invoke('request-save-working-directory', dir);
+  } else {
+    // try to get the saved working dir from the storage
+    const workingDir = await ipcRenderer.invoke('request-working-directory');
+
+    // set the input values
+    if (workingDir) {
+      workingDirInput.value = workingDir;
+      workingDirInput.innerText = workingDir;
+    }
+  }
 }
 
-setRecentProjects();
+(function () {
+  setWorkingDirectory();
+  setRecentProjects();
+})();
