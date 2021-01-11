@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
 const { dialog } = require('electron').remote;
 
 const cerateProjectForm = document.querySelector('#createProjectFrom');
@@ -32,6 +32,7 @@ function createProject(e) {
     requestObject[inputField[0]] = inputField[1];
   }
   // call main thread function
+  console.log(requestObject);
   ipcRenderer.send('request-create-new-project', requestObject);
 
   // TODO: get input value from form
@@ -48,15 +49,26 @@ function createProject(e) {
   });
 }
 
+// open project folder
+function openRecentProject(e) {
+  const path = e.target.getAttribute('path');
+  shell.showItemInFolder(path);
+}
+
 // show file explorer to set the working directory
 async function getWorkingDir() {
   const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
-  const workingDir = result.filePaths[0];
-  workingDirInput.value = workingDir;
-  workingDirInput.disabled = false;
+
+  // only fill if something selected
+  if (!result.canceled) {
+    const workingDir = result.filePaths[0];
+    workingDirInput.value = workingDir;
+    workingDirInput.disabled = false;
+  }
 }
 
 async function deleteRecent(e) {
+  e.stopPropagation();
   const id = e.target.parentElement.getAttribute('project-id');
 
   // call main thread function
@@ -75,7 +87,7 @@ async function setRecentProjects() {
       const projectData = JSON.parse(projects[project]);
       // create recent project element
       const holder = document.createElement('div');
-      const htmlString = ` <div class="top" project-id=${projectData.id}>
+      const htmlString = ` <div class="top" project-id=${projectData.id} path=${projectData.path}>
                             <p>${projectData.name}</p>
                             <i class="fas fa-trash deleteRecent" ></i>
                           </div>
@@ -87,7 +99,10 @@ async function setRecentProjects() {
       holder.classList.add('recent-project');
       holder.innerHTML = htmlString;
 
-      // add eventListner to delete icon
+      // add eventListener to open project folder
+      holder.addEventListener('click', openRecentProject);
+
+      // add eventListener to delete icon
       holder.querySelector('i').addEventListener('click', deleteRecent);
 
       // add element to the list

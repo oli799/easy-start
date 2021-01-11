@@ -1,26 +1,78 @@
 const { execSync } = require('child_process');
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
-const Store = require('electron-store');
 const { v4 } = require('uuid');
+const Store = require('electron-store');
 const fs = require('fs');
 const path = require('path');
+const config = require('./github.config');
 
 // reloading app after every change
 require('electron-reload')(__dirname);
 
 const store = new Store();
+const githubUrl = 'https://github.com/login/oauth/authorize?';
+const authUrl =
+  githubUrl + 'client_id=' + config.client_id + '&scope=' + config.scopes;
 
 function createWindow() {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
+      contextIsolation: true,
       enableRemoteModule: true,
     },
   });
 
-  win.loadFile(path.join(__dirname, '/pages/index.html'));
+  win.loadURL(authUrl);
+  win.show();
+
+  // Handle the response from GitHub
+
+  win.webContents.on('will-navigate', function (event, url) {
+    console.log('navigate...', url);
+    handleCallback(url);
+  });
+
+  win.webContents.on(
+    'did-get-redirect-request',
+    function (event, oldUrl, newUrl) {
+      console.log('redirect...', newUrl);
+      handleCallback(newUrl);
+    }
+  );
+
+  function handleCallback(url) {
+    // sussess url: http://localhost:3030/?code=somecode123
+    // error url: http://localhost:3030/?error=access_denied&error_description=The+user+has+denied+your+application+access.&error_uri=https%3A%2F%2Fdocs.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23access-denied
+
+    var raw_code = ''; // check if code is in the url
+    var code = raw_code && raw_code.length > 1 ? raw_code[1] : null;
+    const error = ''; // check if error is in the url
+
+    console.log('raw_code', raw_code);
+    console.log('code', code);
+    console.log('error', error);
+
+    if (code || error) {
+      // Close the browser if code found or error
+      win.destroy();
+    }
+
+    // If there is a code, proceed to get token from github
+    if (code) {
+      console.log(code);
+      //self.requestGithubToken(options, code);
+    } else if (error) {
+      alert(
+        "Oops! Something went wrong and we couldn't" +
+          'log you in using Github. Please try again.'
+      );
+    }
+  }
+
+  //win.loadFile(path.join(__dirname, '/pages/index.html'));
 }
 
 app.whenReady().then(createWindow);
@@ -77,6 +129,7 @@ ipcMain.on('request-create-new-project', function (event, arg) {
       name: arg.project_name,
       preset:
         arg.preset_type.charAt(0).toUpperCase() + arg.preset_type.slice(1),
+      path: projectFolderPath,
       date: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
     })
   );

@@ -88,7 +88,7 @@ body {
 }
 
 .main .row-3 .styled-checkbox:checked + label:before {
-  background: #34406f;
+  background: #725ac1;
 }
 
 .main .row-3 .styled-checkbox:checked + label:after {
@@ -123,7 +123,7 @@ body {
 
 .main input:focus,
 .main select:focus {
-  border: 2px solid #34406f;
+  border: 2px solid #725ac1;
   outline: none;
 }
 
@@ -144,7 +144,7 @@ button {
   padding: 1rem;
   margin: 0.5rem;
   border-radius: 5px;
-  background-color: #34406f;
+  background-color: #725ac1;
   cursor: pointer;
   outline: none;
 }
@@ -197,7 +197,7 @@ button:disabled {
 }
 
 .sidebar .top .buttons i {
-  color: #34406f;
+  color: #725ac1;
 }
 
 .sidebar #bottom {
@@ -246,6 +246,7 @@ button:disabled {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  z-index: 99;
   cursor: pointer;
 }
 
@@ -266,6 +267,7 @@ button:disabled {
 }
 
 .sidebar #bottom .recent-project .top i {
+  z-index: 999;
   color: #2b2b30;
 }
 
