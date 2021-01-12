@@ -14,6 +14,11 @@ const openProjectButton = document.querySelector('#openProjectButton');
 cerateProjectForm.addEventListener('submit', createProject);
 workingDirButton.addEventListener('click', getWorkingDir);
 
+// for test
+openProjectButton.addEventListener('click', function (e) {
+  ipcRenderer.send('request-github-login-window');
+});
+
 function loader(show) {
   loaderDiv.style.display = show ? 'flex' : 'none';
   everythingExceptLoader.forEach(function (element) {

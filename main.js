@@ -1,10 +1,11 @@
-const { execSync } = require('child_process');
 const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
-const { v4 } = require('uuid');
-const Store = require('electron-store');
-const fs = require('fs');
-const path = require('path');
+const { execSync } = require('child_process');
 const config = require('./github.config');
+const Store = require('electron-store');
+const { v4 } = require('uuid');
+const axios = require('axios').default;
+const path = require('path');
+const fs = require('fs');
 
 // reloading app after every change
 require('electron-reload')(__dirname);
@@ -19,60 +20,35 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
       enableRemoteModule: true,
     },
   });
 
-  win.loadURL(authUrl);
-  win.show();
+  win.loadFile(path.join(__dirname, '/pages/index.html'));
+}
 
-  // Handle the response from GitHub
-
-  win.webContents.on('will-navigate', function (event, url) {
-    console.log('navigate...', url);
-    handleCallback(url);
+function createOAuthWindow() {
+  const githubWin = new BrowserWindow({
+    width: 400,
+    height: 400,
+    modal: true,
   });
 
-  win.webContents.on(
+  githubWin.loadURL(authUrl);
+  githubWin.show();
+
+  githubWin.webContents.on('will-navigate', function (event, url) {
+    handleCallback(url, githubWin);
+  });
+
+  githubWin.webContents.on(
     'did-get-redirect-request',
     function (event, oldUrl, newUrl) {
-      console.log('redirect...', newUrl);
-      handleCallback(newUrl);
+      handleCallback(newUrl, githubWin);
     }
   );
-
-  function handleCallback(url) {
-    // sussess url: http://localhost:3030/?code=somecode123
-    // error url: http://localhost:3030/?error=access_denied&error_description=The+user+has+denied+your+application+access.&error_uri=https%3A%2F%2Fdocs.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23access-denied
-
-    var raw_code = ''; // check if code is in the url
-    var code = raw_code && raw_code.length > 1 ? raw_code[1] : null;
-    const error = ''; // check if error is in the url
-
-    console.log('raw_code', raw_code);
-    console.log('code', code);
-    console.log('error', error);
-
-    if (code || error) {
-      // Close the browser if code found or error
-      win.destroy();
-    }
-
-    // If there is a code, proceed to get token from github
-    if (code) {
-      console.log(code);
-      //self.requestGithubToken(options, code);
-    } else if (error) {
-      alert(
-        "Oops! Something went wrong and we couldn't" +
-          'log you in using Github. Please try again.'
-      );
-    }
-  }
-
-  //win.loadFile(path.join(__dirname, '/pages/index.html'));
 }
 
 app.whenReady().then(createWindow);
@@ -87,6 +63,11 @@ app.on('activate', function () {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+// create github login window
+ipcMain.on('request-github-login-window', function (event, arg) {
+  createOAuthWindow();
 });
 
 // create new project
@@ -160,6 +141,51 @@ ipcMain.handle('request-save-working-directory', function (event, dir) {
 ipcMain.handle('request-working-directory', function (event, arg) {
   return store.get('workingDir');
 });
+
+// Handle the response from GitHub
+function handleCallback(url, win) {
+  // sussess url: http://localhost:3030/?code=somecode123
+  // error url: http://localhost:3030/?error=access_denied&error_description=The+user+has+denied+your+application+access.&error_uri=https%3A%2F%2Fdocs.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23access-denied
+
+  if (url.includes('error')) {
+    console.log('Error: ', url);
+    win.destroy();
+  }
+
+  // If there is a code, proceed to get token from github
+  if (url.length > 1 && url.includes('code')) {
+    const code = url.split('=')[1];
+    requestGithubToken(code);
+    win.destroy();
+  } else {
+    // TODO: response to fronted
+    console.log(
+      "Oops! Something went wrong and we couldn't" +
+        'log you in using Github. Please try again.'
+    );
+  }
+}
+
+function requestGithubToken(code) {
+  axios({
+    method: 'POST',
+    url: 'https://github.com/login/oauth/access_token',
+    data: {
+      client_id: config.client_id,
+      client_secret: config.client_secret,
+      code: code,
+    },
+  }).then(function (response) {
+    const data = response.data;
+    const accessToken = data.substring(
+      data.indexOf('=') + 1,
+      data.indexOf('&')
+    );
+
+    // TODO: response to fronted
+    //store.set('github.accessToken', accessToken);
+  });
+}
 
 function createSelectedPreset(type, path) {
   // execute terminal command
