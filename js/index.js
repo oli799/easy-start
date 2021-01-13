@@ -4,18 +4,19 @@ const { dialog } = require('electron').remote;
 const cerateProjectForm = document.querySelector('#createProjectFrom');
 const workingDirButton = document.querySelector('#workingDirButton');
 const workingDirInput = document.querySelector('#workingDirInput');
+const withGitCheckBox = document.querySelector('#withGit');
+const tooltip = document.querySelector('#tooltip');
 const loaderDiv = document.querySelector('#loader');
 const everythingExceptLoader = document.querySelectorAll(
   'body > *:not(#loader)'
 );
-const createProjectButton = document.querySelector('#createProjectButton');
-const openProjectButton = document.querySelector('#openProjectButton');
+const connectGithubButton = document.querySelector('#connectGithub');
 
 cerateProjectForm.addEventListener('submit', createProject);
 workingDirButton.addEventListener('click', getWorkingDir);
 
 // for test
-openProjectButton.addEventListener('click', function (e) {
+connectGithubButton.addEventListener('click', function (e) {
   ipcRenderer.send('request-github-login-window');
 });
 
@@ -137,7 +138,21 @@ async function setWorkingDirectory(dir) {
   }
 }
 
+async function setGithubStuff() {
+  const response = await ipcRenderer.invoke('request-is-github-connected');
+
+  // github not connected
+  if (response) {
+    withGitCheckBox.disabled = false;
+    withGitCheckBox.checked = true;
+    tooltip.remove();
+  } else {
+    connectGithubButton.style.display = 'block';
+  }
+}
+
 (function () {
   setWorkingDirectory();
   setRecentProjects();
+  setGithubStuff();
 })();

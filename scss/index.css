@@ -64,6 +64,30 @@ body {
   margin-bottom: 3rem;
 }
 
+.main .row-3 label {
+  position: relative;
+}
+
+.main .row-3 label .tooltiptext {
+  display: none;
+  width: 500px;
+  background-color: #131315;
+  color: #fffffc;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -250px;
+}
+
+.main .row-3 label:hover .tooltiptext {
+  display: inline;
+}
+
 .main .row-3 .styled-checkbox {
   position: absolute;
   opacity: 0;
@@ -304,5 +328,10 @@ button:disabled {
           align-items: center;
   color: #fffffc;
   font-weight: bold;
+}
+
+#connectGithub {
+  display: none;
+  background-color: #131315;
 }
 /*# sourceMappingURL=index.css.map */

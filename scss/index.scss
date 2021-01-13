@@ -45,6 +45,33 @@ body {
   .row-3 {
     margin-top: 0.5rem;
     margin-bottom: 3rem;
+
+    label {
+      position: relative;
+
+      .tooltiptext {
+        display: none;
+        width: 500px;
+        background-color: $dark;
+        color: $light;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -250px;
+      }
+    }
+    label:hover {
+      .tooltiptext {
+        display: inline;
+      }
+    }
+
     .styled-checkbox {
       position: absolute;
       opacity: 0;
@@ -230,4 +257,9 @@ button {
   align-items: center;
   color: $light;
   font-weight: bold;
+}
+
+#connectGithub {
+  display: none;
+  background-color: $dark;
 }

@@ -73,15 +73,22 @@
             id="withGit"
             type="checkbox"
             value="true"
-            checked
+            disabled
           />
-          <label for="withGit"
-            >Inintalize your project with github repository</label
-          >
+          <label for="withGit">
+            Inintalize your project with github repository
+            <span class="tooltiptext" id="tooltip"
+              >First please connect your github account with the button
+              below!</span
+            >
+          </label>
         </div>
         <div class="row-4">
           <button type="submit" id="createProjectButton">Create Project</button>
-          <button type="button" id="openProjectButton">Open in VsCode</button>
+          <button type="button" id="connectGithub">
+            <i class="fab fa-github"></i>
+            Connect GitHub
+          </button>
         </div>
       </form>
     </div>

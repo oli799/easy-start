@@ -15,8 +15,12 @@ const githubUrl = 'https://github.com/login/oauth/authorize?';
 const authUrl =
   githubUrl + 'client_id=' + config.client_id + '&scope=' + config.scopes;
 
+let win;
+
+//store.delete('github.accessToken');
+
 function createWindow() {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -71,7 +75,7 @@ ipcMain.on('request-github-login-window', function (event, arg) {
 });
 
 // create new project
-ipcMain.on('request-create-new-project', function (event, arg) {
+ipcMain.on('request-create-new-project', async function (event, arg) {
   const projectFolderPath = `${arg.working_dir}/${arg.project_name}`;
 
   // create project folder
@@ -116,7 +120,25 @@ ipcMain.on('request-create-new-project', function (event, arg) {
   );
 
   if (!!arg.with_git) {
-    // create git repo
+    // create github repo
+    const accessToken = store.get('github.accessToken');
+
+    try {
+      const response = await axios.post(
+        'https://api.github.com/user/repos',
+        {
+          name: arg.project_name,
+        },
+        {
+          headers: {
+            Authorization: `token ${accessToken}`,
+          },
+        }
+      );
+      console.log('repo: ', response);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return event.reply('response-create-new-project', 'Done!');
@@ -142,21 +164,32 @@ ipcMain.handle('request-working-directory', function (event, arg) {
   return store.get('workingDir');
 });
 
+// is github connected
+ipcMain.handle('request-is-github-connected', function (event, arg) {
+  const token = store.get('github.accessToken');
+
+  if (token) {
+    return true;
+  }
+
+  return false;
+});
+
 // Handle the response from GitHub
-function handleCallback(url, win) {
+function handleCallback(url, githubWin) {
   // sussess url: http://localhost:3030/?code=somecode123
   // error url: http://localhost:3030/?error=access_denied&error_description=The+user+has+denied+your+application+access.&error_uri=https%3A%2F%2Fdocs.github.com%2Fapps%2Fmanaging-oauth-apps%2Ftroubleshooting-authorization-request-errors%2F%23access-denied
 
   if (url.includes('error')) {
     console.log('Error: ', url);
-    win.destroy();
+    githubWin.destroy();
   }
 
   // If there is a code, proceed to get token from github
   if (url.length > 1 && url.includes('code')) {
     const code = url.split('=')[1];
     requestGithubToken(code);
-    win.destroy();
+    githubWin.destroy();
   } else {
     // TODO: response to fronted
     console.log(
@@ -182,8 +215,11 @@ function requestGithubToken(code) {
       data.indexOf('&')
     );
 
-    // TODO: response to fronted
-    //store.set('github.accessToken', accessToken);
+    // store access token
+    store.set('github.accessToken', accessToken);
+
+    // refresh window to show changes
+    win.reload();
   });
 }
 
