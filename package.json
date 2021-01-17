@@ -4,13 +4,55 @@
   "description": "create your next project much easier",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder build"
   },
   "keywords": [],
-  "author": "oli799",
+  "author": "reideroliver",
   "license": "ISC",
+  "build": {
+    "appId": "com.rdev.easy-start",
+    "productName": "Easy Start",
+    "copyright": "Copyright © 2021 ${author}",
+    "mac": {
+      "icon": "./assets/icons/mac/icon.icns",
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "icon": "./assets/icons/win/256x256.png"
+    },
+    "files": [
+      "./build/**/*",
+      "./node_modules/**/*",
+      "./assets/**/*",
+      "./js/**/*",
+      "./scsss/**/*",
+      "./dist/**/*",
+      "./pages/**/*",
+      "*.js"
+    ],
+    "extraResources": [
+      {
+        "from": "js/",
+        "to": "js/"
+      },
+      {
+        "from": "assets/",
+        "to": "assets/"
+      },
+      {
+        "from": "scss/",
+        "to": "scss/"
+      }
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
   "devDependencies": {
     "electron": "^11.1.1",
+    "electron-builder": "^22.9.1",
+    "electron-icon-maker": "^0.0.5",
     "electron-reload": "^1.5.0"
   },
   "dependencies": {
