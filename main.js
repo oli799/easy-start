@@ -135,7 +135,29 @@ ipcMain.on('request-create-new-project', async function (event, arg) {
           },
         }
       );
-      console.log('repo: ', response);
+
+      // if repo is created on github connect it with the local repo
+      execSync(`echo "# ${arg.project_name}" >> README.md`, {
+        cwd: projectFolderPath,
+      });
+      execSync('git init', { cwd: projectFolderPath });
+      execSync('git add .', { cwd: projectFolderPath });
+      execSync('git commit -m "initial commit"', { cwd: projectFolderPath });
+      execSync('git branch -M main', { cwd: projectFolderPath });
+
+      try {
+        execSync('git remote show origin');
+        execSync(
+          `git remote add origin https://github.com/oli799/${arg.project_name}.git`,
+          { cwd: projectFolderPath }
+        );
+      } catch (error) {
+        execSync(
+          `git remote set-url origin https://github.com/oli799/${arg.project_name}.git`,
+          { cwd: projectFolderPath }
+        );
+      }
+      execSync('git push -u origin main', { cwd: projectFolderPath });
     } catch (error) {
       console.log(error);
     }
