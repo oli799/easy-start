@@ -88,7 +88,7 @@ async function setRecentProjects() {
     'projects'
   );
 
-  if (Object.keys(projects).length) {
+  if (projects && Object.keys(projects).length) {
     Object.keys(projects).forEach(function (project) {
       const projectData = JSON.parse(projects[project]);
       // create recent project element
@@ -130,6 +130,7 @@ async function setWorkingDirectory(dir) {
     // try to get the saved working dir from the storage
     const workingDir = await ipcRenderer.invoke('request-working-directory');
 
+    console.log(workingDir);
     // set the input values
     if (workingDir) {
       workingDirInput.value = workingDir;

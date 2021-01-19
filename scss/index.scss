@@ -177,14 +177,11 @@ button {
     justify-content: space-between;
     align-items: center;
 
-    .buttons a:hover {
+    a:hover {
       opacity: 0.5;
     }
-    .buttons a:first-child {
-      margin-right: 1rem;
-    }
 
-    .buttons i {
+    a {
       color: $primary;
     }
   }

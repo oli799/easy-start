@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <base href="./" />
     <meta charset="UTF-8" />
     <title>Easy start</title>
     <meta
@@ -31,10 +32,7 @@
     <div class="sidebar">
       <div class="top">
         <h2>Recent</h2>
-        <div class="buttons">
-          <a href="settings.html"> <i class="fas fa-plus"> </i></a>
-          <a href="settings.html"> <i class="fas fa-cog"></i></a>
-        </div>
+        <!-- <a href="#" id="addNewPreset"> <i class="fas fa-plus"></i></a> -->
       </div>
       <div id="bottom"></div>
     </div>
@@ -49,7 +47,7 @@
             required
           />
           <select name="preset_type" required>
-            <option value="" disabled selected>Project type</option>
+            <option value="" disabled selected>Project preset</option>
             <option value="npm">Npm (JavaScript)</option>
             <option value="express">Express (JavaScript)</option>
             <option value="django">Django (Python)</option>

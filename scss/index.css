@@ -212,15 +212,11 @@ button:disabled {
           align-items: center;
 }
 
-.sidebar .top .buttons a:hover {
+.sidebar .top a:hover {
   opacity: 0.5;
 }
 
-.sidebar .top .buttons a:first-child {
-  margin-right: 1rem;
-}
-
-.sidebar .top .buttons i {
+.sidebar .top a {
   color: #725ac1;
 }
 

@@ -5,7 +5,10 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder build"
+    "build-mac": "electron-builder build --mac",
+    "build-win": "electron-builder build --win",
+    "build-linux": "electron-builder build --linux",
+    "build-all": "electron-builder build -mwl"
   },
   "keywords": [],
   "author": "reideroliver",
@@ -20,33 +23,6 @@
     },
     "win": {
       "icon": "./assets/icons/win/256x256.png"
-    },
-    "files": [
-      "./build/**/*",
-      "./node_modules/**/*",
-      "./assets/**/*",
-      "./js/**/*",
-      "./scsss/**/*",
-      "./dist/**/*",
-      "./pages/**/*",
-      "*.js"
-    ],
-    "extraResources": [
-      {
-        "from": "js/",
-        "to": "js/"
-      },
-      {
-        "from": "assets/",
-        "to": "assets/"
-      },
-      {
-        "from": "scss/",
-        "to": "scss/"
-      }
-    ],
-    "directories": {
-      "buildResources": "assets"
     }
   },
   "devDependencies": {

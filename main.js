@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs');
 
 // reloading app after every change
-require('electron-reload')(__dirname);
+// require('electron-reload')(__dirname);
 
 const store = new Store();
 const githubUrl = 'https://github.com/login/oauth/authorize?';
@@ -17,7 +17,7 @@ const authUrl =
 
 let win;
 
-//store.delete('github.accessToken');
+store.clear();
 
 function createWindow() {
   win = new BrowserWindow({
@@ -27,6 +27,7 @@ function createWindow() {
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
       enableRemoteModule: true,
+      contextIsolation: false,
     },
   });
 
@@ -38,6 +39,7 @@ function createOAuthWindow() {
     width: 400,
     height: 400,
     modal: true,
+    contextIsolation: false,
   });
 
   githubWin.loadURL(authUrl);
@@ -178,6 +180,7 @@ ipcMain.handle('request-recent-project-delete', function (event, id) {
 
 // save/update working directory
 ipcMain.handle('request-save-working-directory', function (event, dir) {
+  console.log(dir);
   return store.set('workingDir', dir);
 });
 
