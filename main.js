@@ -5,6 +5,7 @@ const Store = require('electron-store');
 const { v4 } = require('uuid');
 const axios = require('axios').default;
 const path = require('path');
+const rimraf = require('rimraf');
 const fs = require('fs');
 
 // reloading app after every change
@@ -174,13 +175,16 @@ ipcMain.handle('request-recent-projects', function (event, key) {
 });
 
 // delete recent project by id
-ipcMain.handle('request-recent-project-delete', function (event, id) {
-  return store.delete(`projects.${id}`);
+ipcMain.handle('request-recent-project-delete', function (event, arg) {
+  store.delete(`projects.${arg.id}`);
+
+  rimraf(arg.path, function () {
+    return 'Done!';
+  });
 });
 
 // save/update working directory
 ipcMain.handle('request-save-working-directory', function (event, dir) {
-  console.log(dir);
   return store.set('workingDir', dir);
 });
 
@@ -279,7 +283,7 @@ function createSelectedPreset(type, path) {
       }
     }
     case 'empty': {
-      return 'done';
+      return 'Done!';
     }
   }
 }
