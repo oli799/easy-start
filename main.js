@@ -9,7 +9,9 @@ const rimraf = require('rimraf');
 const fs = require('fs');
 
 // reloading app after every change
-// require('electron-reload')(__dirname);
+//require('electron-reload')(__dirname);
+// clear storage at start
+//store.clear();
 
 const store = new Store();
 const githubUrl = 'https://github.com/login/oauth/authorize?';
@@ -17,8 +19,6 @@ const authUrl =
   githubUrl + 'client_id=' + config.client_id + '&scope=' + config.scopes;
 
 let win;
-
-store.clear();
 
 function createWindow() {
   win = new BrowserWindow({
@@ -259,32 +259,46 @@ function createSelectedPreset(type, path) {
       return execSync('npm init -y', { cwd: path });
     }
     case 'django': {
-      try {
-        return execSync(
-          'git clone https://github.com/wsvincent/djangox.git .',
-          {
-            cwd: path,
-          }
-        );
-      } catch (error) {
-        return 0;
-      }
+      return cloneRepo('https://github.com/wsvincent/djangox.git', path);
     }
     case 'express': {
-      try {
-        return execSync(
-          'git clone https://github.com/latifs/simple-express.git .',
-          {
-            cwd: path,
-          }
-        );
-      } catch (error) {
-        return 0;
-      }
+      return cloneRepo('https://github.com/latifs/simple-express.git', path);
+    }
+    case 'react': {
+      return cloneRepo(
+        'https://github.com/react-boilerplate/react-boilerplate.git',
+        path,
+        '--depth=1'
+      );
+    }
+    case 'react-native': {
+      return cloneRepo(
+        'https://github.com/victorkvarghese/react-native-boilerplate.git',
+        path
+      );
+    }
+    case vue: {
+      return cloneRepo(
+        'https://github.com/chrisvfritz/vue-enterprise-boilerplate.git',
+        path
+      );
     }
     case 'empty': {
       return 'Done!';
     }
+  }
+}
+
+// clone repo from github
+function cloneRepo(link, path, option) {
+  const command = `git clone ${option ? option : ''} ${link} .`;
+
+  try {
+    return execSync(command, {
+      cwd: path,
+    });
+  } catch (error) {
+    return 0;
   }
 }
 
