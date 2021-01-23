@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base href="./" />
+    <meta charset="UTF-8" />
+    <title>Settings</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="../scss/settings.css" />
+    <!-- font awesome icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+      integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+      crossorigin="anonymous"
+    />
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="main">
+      <a href="./index.html"><i class="fas fa-arrow-left"></i></a>
+      <div class="presets">
+        <div class="preset">
+          <label for="react">Express</label>
+          <input
+            id="express"
+            type="text"
+            placeholder="Github reposytory link"
+          />
+        </div>
+        <div class="preset">
+          <label for="react">React</label>
+          <input id="react" type="text" placeholder="Github reposytory link" />
+        </div>
+        <div class="preset">
+          <label for="react">React Native</label>
+          <input
+            id="react-native"
+            type="text"
+            placeholder="Github reposytory link"
+          />
+        </div>
+        <div class="preset">
+          <label for="react">Vue</label>
+          <input id="vue" type="text" placeholder="Github reposytory link" />
+        </div>
+        <div class="preset">
+          <label for="react">Django</label>
+          <input id="django" type="text" placeholder="Github reposytory link" />
+        </div>
+        <div class="button-holder">
+          <button type="button" id="save-preset-urls">Save</button>
+        </div>
+      </div>
+    </div>
+    <script src="../js/settings.js"></script>
+  </body>
+</html>

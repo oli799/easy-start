@@ -9,7 +9,7 @@ const rimraf = require('rimraf');
 const fs = require('fs');
 
 // reloading app after every change
-//require('electron-reload')(__dirname);
+require('electron-reload')(__dirname);
 // clear storage at start
 //store.clear();
 
