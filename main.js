@@ -8,12 +8,13 @@ const path = require('path');
 const rimraf = require('rimraf');
 const fs = require('fs');
 
+// init db
+const store = new Store();
+
 // reloading app after every change
 require('electron-reload')(__dirname);
-// clear storage at start
-//store.clear();
+//setDatabaseToDefault();
 
-const store = new Store();
 const githubUrl = 'https://github.com/login/oauth/authorize?';
 const authUrl =
   githubUrl + 'client_id=' + config.client_id + '&scope=' + config.scopes;
@@ -169,6 +170,17 @@ ipcMain.on('request-create-new-project', async function (event, arg) {
   return event.reply('response-create-new-project', 'Done!');
 });
 
+// get all presets (name, link) from storage
+ipcMain.handle('request-presets', function (event, arg) {
+  return store.get('presets');
+});
+
+// save presets
+ipcMain.handle('request-save-presets', function (event, presets) {
+  console.log(presets);
+  return store.set('presets', presets);
+});
+
 // get recent projects
 ipcMain.handle('request-recent-projects', function (event, key) {
   return store.get(key);
@@ -310,4 +322,18 @@ function createProjectFolder(path) {
   }
 
   return false;
+}
+
+// set defaults to database
+function setDatabaseToDefault() {
+  const defaultPresets = {
+    express: 'https://github.com/latifs/simple-express.git',
+    react: 'https://github.com/react-boilerplate/react-boilerplate.git',
+    'react-native':
+      'https://github.com/victorkvarghese/react-native-boilerplate.git',
+    vue: 'https://github.com/chrisvfritz/vue-enterprise-boilerplate.git',
+  };
+
+  store.clear();
+  store.set('presets', defaultPresets);
 }
