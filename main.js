@@ -12,7 +12,7 @@ const fs = require('fs');
 const store = new Store();
 
 // reloading app after every change
-require('electron-reload')(__dirname);
+//require('electron-reload')(__dirname);
 //setDatabaseToDefault();
 
 const githubUrl = 'https://github.com/login/oauth/authorize?';
@@ -265,35 +265,27 @@ function requestGithubToken(code) {
 }
 
 function createSelectedPreset(type, path) {
+  const url = store.get(`presets.${type}`);
+
   // execute terminal command
   switch (type) {
     case 'npm': {
       return execSync('npm init -y', { cwd: path });
     }
     case 'django': {
-      return cloneRepo('https://github.com/wsvincent/djangox.git', path);
+      return cloneRepo(url, path);
     }
     case 'express': {
-      return cloneRepo('https://github.com/latifs/simple-express.git', path);
+      return cloneRepo(url, path);
     }
     case 'react': {
-      return cloneRepo(
-        'https://github.com/react-boilerplate/react-boilerplate.git',
-        path,
-        '--depth=1'
-      );
+      return cloneRepo(url, path, '--depth=1');
     }
     case 'react-native': {
-      return cloneRepo(
-        'https://github.com/victorkvarghese/react-native-boilerplate.git',
-        path
-      );
+      return cloneRepo(url, path);
     }
     case vue: {
-      return cloneRepo(
-        'https://github.com/chrisvfritz/vue-enterprise-boilerplate.git',
-        path
-      );
+      return cloneRepo(url, path);
     }
     case 'empty': {
       return 'Done!';
