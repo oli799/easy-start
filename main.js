@@ -13,7 +13,8 @@ const store = new Store();
 
 // reloading app after every change
 //require('electron-reload')(__dirname);
-//setDatabaseToDefault();
+//store.clear();
+setDatabaseToDefault();
 
 const githubUrl = 'https://github.com/login/oauth/authorize?';
 const authUrl =
@@ -269,9 +270,6 @@ function createSelectedPreset(type, path) {
 
   // execute terminal command
   switch (type) {
-    case 'npm': {
-      return execSync('npm init -y', { cwd: path });
-    }
     case 'django': {
       return cloneRepo(url, path);
     }
@@ -318,14 +316,14 @@ function createProjectFolder(path) {
 
 // set defaults to database
 function setDatabaseToDefault() {
-  const defaultPresets = {
-    express: 'https://github.com/latifs/simple-express.git',
-    react: 'https://github.com/react-boilerplate/react-boilerplate.git',
-    'react-native':
-      'https://github.com/victorkvarghese/react-native-boilerplate.git',
-    vue: 'https://github.com/chrisvfritz/vue-enterprise-boilerplate.git',
-  };
-
-  store.clear();
-  store.set('presets', defaultPresets);
+  if (!store.get('presets')) {
+    const defaultPresets = {
+      express: 'https://github.com/latifs/simple-express.git',
+      react: 'https://github.com/react-boilerplate/react-boilerplate.git',
+      'react-native':
+        'https://github.com/victorkvarghese/react-native-boilerplate.git',
+      vue: 'https://github.com/chrisvfritz/vue-enterprise-boilerplate.git',
+    };
+    store.set('presets', defaultPresets);
+  }
 }
