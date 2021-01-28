@@ -26,7 +26,13 @@ Download prebuilded installer from this [link](https://drive.google.com/drive/fo
 git clone https://github.com/oli799/easy-start
 touch github.condfig.js (fill with your credentials)
 npm install
-npm start
+npm run build-win
+  or
+npm run build-mac
+  or
+npm run build-linux
+  or
+npm run build-all
 ```
 
 ## Screenshots 📷
