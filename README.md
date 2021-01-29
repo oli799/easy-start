@@ -4,9 +4,8 @@ Easy start is a simple assistant to start your projects much easier.
 
 ## Requriements 🛠
 
-- Git
-  - installed on your computer (for colning presets)
-  - profile (for creating repos)
+- Git installed on your computer (for colning presets)
+- GitHub profile (for adding source controll)
 
 ## Features ✅
 
