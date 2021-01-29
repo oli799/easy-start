@@ -13,7 +13,7 @@ const store = new Store();
 
 // reloading app after every change
 //require('electron-reload')(__dirname);
-store.clear();
+//store.clear();
 setDatabaseToDefault();
 
 const githubUrl = 'https://github.com/login/oauth/authorize?';
