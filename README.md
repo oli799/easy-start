@@ -1,6 +1,6 @@
 # Easy start 🏁 (TWT codejam submission)
 
-Easy start is a simple assistant to start your projects much easier.
+Easy start is a simple desktop assistant that makes much easier to start your new projects.
 
 ## Requriements 🛠
 
