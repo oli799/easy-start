@@ -155,12 +155,12 @@ ipcMain.on('request-create-new-project', async function (event, arg) {
       try {
         execSync('git remote show origin');
         execSync(
-          `git remote add origin https://github.com/${githubUserame}/${arg.project_name}.git`,
+          `git remote add origin https://${githubUserame}:${accessToken}@github.com/${githubUserame}/${arg.project_name}.git`,
           { cwd: projectFolderPath }
         );
       } catch (error) {
         execSync(
-          `git remote set-url origin https://github.com/${githubUserame}/${arg.project_name}.git`,
+          `git remote set-url origin https://${githubUserame}:${accessToken}@github.com/${githubUserame}/${arg.project_name}.git`,
           { cwd: projectFolderPath }
         );
       }
@@ -283,12 +283,12 @@ function createSelectedPreset(type, path) {
       return cloneRepo(url, path);
     }
     case 'react': {
-      return cloneRepo(url, path, '--depth=1');
+      return cloneRepo(url, path);
     }
     case 'react-native': {
       return cloneRepo(url, path);
     }
-    case vue: {
+    case 'vue': {
       return cloneRepo(url, path);
     }
     case 'empty': {
