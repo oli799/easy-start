@@ -13,7 +13,7 @@ const store = new Store();
 
 // reloading app after every change
 //require('electron-reload')(__dirname);
-//store.clear();
+store.clear();
 setDatabaseToDefault();
 
 const githubUrl = 'https://github.com/login/oauth/authorize?';
@@ -141,6 +141,8 @@ ipcMain.on('request-create-new-project', async function (event, arg) {
         }
       );
 
+      const githubUserame = store.get('github.username');
+
       // if repo is created on github connect it with the local repo
       execSync(`echo "# ${arg.project_name}" >> README.md`, {
         cwd: projectFolderPath,
@@ -153,12 +155,12 @@ ipcMain.on('request-create-new-project', async function (event, arg) {
       try {
         execSync('git remote show origin');
         execSync(
-          `git remote add origin https://github.com/oli799/${arg.project_name}.git`,
+          `git remote add origin https://github.com/${githubUserame}/${arg.project_name}.git`,
           { cwd: projectFolderPath }
         );
       } catch (error) {
         execSync(
-          `git remote set-url origin https://github.com/oli799/${arg.project_name}.git`,
+          `git remote set-url origin https://github.com/${githubUserame}/${arg.project_name}.git`,
           { cwd: projectFolderPath }
         );
       }
@@ -231,6 +233,7 @@ function handleCallback(url, githubWin) {
   if (url.length > 1 && url.includes('code')) {
     const code = url.split('=')[1];
     requestGithubToken(code);
+
     githubWin.destroy();
   } else {
     // TODO: response to fronted
@@ -259,6 +262,9 @@ function requestGithubToken(code) {
 
     // store access token
     store.set('github.accessToken', accessToken);
+
+    //store github username
+    setGithubUserName();
 
     // refresh window to show changes
     win.reload();
@@ -312,6 +318,21 @@ function createProjectFolder(path) {
   }
 
   return false;
+}
+
+async function setGithubUserName() {
+  const accessToken = store.get('github.accessToken');
+  try {
+    const response = await axios.get('https://api.github.com/user', {
+      headers: {
+        Authorization: `token ${accessToken}`,
+      },
+    });
+
+    store.set('github.username', response.data.login);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 // set defaults to database
