@@ -13,7 +13,7 @@ const store = new Store();
 
 // reloading app after every change
 //require('electron-reload')(__dirname);
-//store.clear();
+store.clear();
 setDatabaseToDefault();
 
 const githubUrl = 'https://github.com/login/oauth/authorize?';
@@ -81,7 +81,13 @@ ipcMain.on('request-github-login-window', function (event, arg) {
 
 // create new project
 ipcMain.on('request-create-new-project', async function (event, arg) {
-  const projectFolderPath = `${arg.working_dir}/${arg.project_name}`;
+  let projectFolderPath;
+
+  if (process.platform === 'win32') {
+    projectFolderPath = `${arg.working_dir}\\${arg.project_name}`;
+  } else {
+    projectFolderPath = `${arg.working_dir}/${arg.project_name}`;
+  }
 
   // create project folder
   const isFolderCreated = createProjectFolder(projectFolderPath);
