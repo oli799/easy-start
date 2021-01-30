@@ -75,11 +75,13 @@ async function getWorkingDir() {
 
 async function deleteRecent(e) {
   e.stopPropagation();
-  const id = e.target.parentElement.getAttribute('project-id');
-  const path = e.target.parentElement.getAttribute('path');
+  if (confirm('Are you sure?')) {
+    const id = e.target.parentElement.getAttribute('project-id');
+    const path = e.target.parentElement.getAttribute('path');
 
-  // call main thread function
-  await ipcRenderer.invoke('request-recent-project-delete', { id, path });
+    // call main thread function
+    await ipcRenderer.invoke('request-recent-project-delete', { id, path });
+  }
   window.location.reload();
 }
 

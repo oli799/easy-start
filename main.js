@@ -350,6 +350,7 @@ function setDatabaseToDefault() {
       'react-native':
         'https://github.com/victorkvarghese/react-native-boilerplate.git',
       vue: 'https://github.com/chrisvfritz/vue-enterprise-boilerplate.git',
+      django: 'https://github.com/wsvincent/djangox.git',
     };
     store.set('presets', defaultPresets);
   }
